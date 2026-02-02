@@ -1,0 +1,17 @@
+camera_index: 0
+frame_width: 1280
+frame_height: 720
+hand_touch_frames: 100
+cooldown_seconds: 2.0
+use_yolo_person: false
+# If enabled, uses YOLOv8 to get the best person box and runs face/hand inside it.
+yolo_model: yolov8n.pt
+yolo_conf: 0.4
+# Beard ROI is computed as the lower portion of the face bounding box.
+beard_roi_height_ratio: 0.4
+# Audio
+sound_path: ""
+beep_freq: 1200
+beep_duration_ms: 250
+# Debug overlay
+draw_debug: true
