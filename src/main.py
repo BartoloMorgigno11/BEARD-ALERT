@@ -29,50 +29,56 @@ def main() -> None:
     cap = cv2.VideoCapture(int(cfg.get("camera_index", 0)))
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, int(cfg.get("frame_width", 1280)))
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, int(cfg.get("frame_height", 720)))
+    if not cap.isOpened():
+        raise RuntimeError(
+            f"Unable to open camera index {cfg.get('camera_index', 0)}. "
+            "Check the camera connection, permissions, and config.yaml."
+        )
 
     touch_frames = 0
     last_alert = 0.0
     cooldown = float(cfg.get("cooldown_seconds", 2.0))
 
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
+    try:
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                raise RuntimeError("The camera stopped returning frames.")
 
-        result = detector.detect(frame)
-        if result.hand_touch:
-            touch_frames += 1
-        else:
-            touch_frames = 0
+            result = detector.detect(frame)
+            if result.hand_touch:
+                touch_frames += 1
+            else:
+                touch_frames = 0
 
-        now = time.time()
-        if touch_frames >= int(cfg.get("hand_touch_frames", 8)) and (now - last_alert) > cooldown:
-            play_alert(cfg.get("sound_path", ""), int(cfg.get("beep_freq", 1200)), int(cfg.get("beep_duration_ms", 250)))
-            last_alert = now
+            now = time.time()
+            if touch_frames >= int(cfg.get("hand_touch_frames", 8)) and (now - last_alert) > cooldown:
+                play_alert(cfg.get("sound_path", ""), int(cfg.get("beep_freq", 1200)), int(cfg.get("beep_duration_ms", 250)))
+                last_alert = now
 
-        if cfg.get("draw_debug", True):
-            if result.beard_roi:
-                x1, y1, x2, y2 = result.beard_roi
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 200, 255), 2)
-                cv2.putText(frame, "BEARD ROI", (x1, y1 - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 200, 255), 2)
-            for (hx1, hy1, hx2, hy2) in result.hand_boxes:
-                cv2.rectangle(frame, (hx1, hy1), (hx2, hy2), (0, 255, 0), 2)
-            cv2.putText(
-                frame,
-                f"Touch frames: {touch_frames}",
-                (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.7,
-                (255, 255, 255),
-                2,
-            )
+            if cfg.get("draw_debug", True):
+                if result.beard_roi:
+                    x1, y1, x2, y2 = result.beard_roi
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 200, 255), 2)
+                    cv2.putText(frame, "BEARD ROI", (x1, y1 - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 200, 255), 2)
+                for (hx1, hy1, hx2, hy2) in result.hand_boxes:
+                    cv2.rectangle(frame, (hx1, hy1), (hx2, hy2), (0, 255, 0), 2)
+                cv2.putText(
+                    frame,
+                    f"Touch frames: {touch_frames}",
+                    (10, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.7,
+                    (255, 255, 255),
+                    2,
+                )
 
-        cv2.imshow("Beard Alert", frame)
-        if cv2.waitKey(1) & 0xFF == 27:
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
+            cv2.imshow("Beard Alert", frame)
+            if cv2.waitKey(1) & 0xFF == 27:
+                break
+    finally:
+        cap.release()
+        cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":

@@ -45,7 +45,12 @@ class BeardTouchDetector:
             min_tracking_confidence=0.5,
         )
         self.yolo = None
-        if self.config.use_yolo_person and YOLO is not None:
+        if self.config.use_yolo_person and YOLO is None:
+            raise RuntimeError(
+                "YOLO person detection is enabled, but Ultralytics is not installed. "
+                "Install requirements-yolo.txt or set use_yolo_person to false."
+            )
+        if self.config.use_yolo_person:
             self.yolo = YOLO(self.config.yolo_model)
 
     def _get_person_box(self, frame: np.ndarray) -> Optional[Tuple[int, int, int, int]]:
