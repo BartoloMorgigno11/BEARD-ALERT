@@ -61,6 +61,22 @@ The default configuration does **not** require or download YOLO. To enable it:
 
 Then set `use_yolo_person: true` in `config.yaml`. Ultralytics may download the public `yolov8n.pt` checkpoint on its first use.
 
+
+## Verify without a webcam
+
+The alert timing/state policy is tested separately from camera capture, MediaPipe,
+and Windows audio. This does **not** establish landmark-detection accuracy or
+real-time FPS; it provides a repeatable, hardware-free functional check.
+
+```powershell
+python -m unittest discover -s tests -p "test_*.py" -v
+```
+
+GitHub Actions runs the same test and a Python syntax check. Webcam accuracy,
+lighting robustness, audio playback, and optional YOLO remain manual Windows
+acceptance checks. The `AlertGate` uses a monotonic clock for cooldown and
+requires consecutive overlapping detections before notifying.
+
 ## Privacy
 
 Frames are processed locally in memory. The application does not upload, transmit, or save webcam frames. Any configured local audio file remains on your machine and is excluded from Git by default practices.
