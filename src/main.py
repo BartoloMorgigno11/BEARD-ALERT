@@ -28,7 +28,7 @@ def main() -> None:
     detector = BeardTouchDetector(det_cfg)
 
     gate = AlertGate(
-        required_frames=int(cfg.get("hand_touch_frames", 8)),
+        required_frames=cfg.get("hand_touch_frames", 8),
         cooldown_seconds=float(cfg.get("cooldown_seconds", 2.0)),
     )
 
