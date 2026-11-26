@@ -8,6 +8,7 @@ import yaml
 
 from audio import play_alert
 from detection import BeardTouchDetector, DetectionConfig
+from alert_logic import AlertGate
 
 
 def load_config() -> dict:
@@ -24,6 +25,10 @@ def main() -> None:
         yolo_conf=float(cfg.get("yolo_conf")),
         beard_roi_height_ratio=float(cfg.get("beard_roi_height_ratio")),
     )
+    gate = AlertGate(
+        required_frames=cfg.get("hand_touch_frames", 8),
+        cooldown_seconds=float(cfg.get("cooldown_seconds", 2.0)),
+    )
     detector = BeardTouchDetector(det_cfg)
 
     cap = cv2.VideoCapture(int(cfg.get("camera_index", 0)))
@@ -35,10 +40,6 @@ def main() -> None:
             "Check the camera connection, permissions, and config.yaml."
         )
 
-    touch_frames = 0
-    last_alert = 0.0
-    cooldown = float(cfg.get("cooldown_seconds", 2.0))
-
     try:
         while True:
             ret, frame = cap.read()
@@ -46,15 +47,8 @@ def main() -> None:
                 raise RuntimeError("The camera stopped returning frames.")
 
             result = detector.detect(frame)
-            if result.hand_touch:
-                touch_frames += 1
-            else:
-                touch_frames = 0
-
-            now = time.time()
-            if touch_frames >= int(cfg.get("hand_touch_frames", 8)) and (now - last_alert) > cooldown:
+            if gate.observe(result.hand_touch, time.monotonic()):
                 play_alert(cfg.get("sound_path", ""), int(cfg.get("beep_freq", 1200)), int(cfg.get("beep_duration_ms", 250)))
-                last_alert = now
 
             if cfg.get("draw_debug", True):
                 if result.beard_roi:
@@ -65,7 +59,7 @@ def main() -> None:
                     cv2.rectangle(frame, (hx1, hy1), (hx2, hy2), (0, 255, 0), 2)
                 cv2.putText(
                     frame,
-                    f"Touch frames: {touch_frames}",
+                    f"Touch frames: {gate.consecutive}",
                     (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.7,
