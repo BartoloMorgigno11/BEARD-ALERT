@@ -10,7 +10,7 @@ class AlertGate:
     last_alert_at: float | None = None
 
     def __post_init__(self) -> None:
-        if isinstance(self.required_frames, bool) or self.required_frames < 1:
+        if type(self.required_frames) is not int or self.required_frames < 1:
             raise ValueError("required_frames must be a positive integer")
         if not (0 <= self.cooldown_seconds < float("inf")):
             raise ValueError("cooldown_seconds must be finite and nonnegative")
