@@ -26,7 +26,7 @@ class AlertGateTests(unittest.TestCase):
         self.assertTrue(gate.observe(True, 103.1))
 
     def test_rejects_invalid_settings(self):
-        for frames, cooldown in [(0, 1.0), (-1, 1.0), (2, -1.0), (2, float("inf"))]:
+        for frames, cooldown in [(0, 1.0), (-1, 1.0), (2, -1.0), (2, float("inf")), (2.5, 1.0), (True, 1.0)]:
             with self.subTest(frames=frames, cooldown=cooldown):
                 with self.assertRaises(ValueError):
                     AlertGate(frames, cooldown)
