@@ -25,12 +25,11 @@ def main() -> None:
         yolo_conf=float(cfg.get("yolo_conf")),
         beard_roi_height_ratio=float(cfg.get("beard_roi_height_ratio")),
     )
-    detector = BeardTouchDetector(det_cfg)
-
     gate = AlertGate(
         required_frames=cfg.get("hand_touch_frames", 8),
         cooldown_seconds=float(cfg.get("cooldown_seconds", 2.0)),
     )
+    detector = BeardTouchDetector(det_cfg)
 
     cap = cv2.VideoCapture(int(cfg.get("camera_index", 0)))
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, int(cfg.get("frame_width", 1280)))
