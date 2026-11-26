@@ -27,6 +27,11 @@ def main() -> None:
     )
     detector = BeardTouchDetector(det_cfg)
 
+    gate = AlertGate(
+        required_frames=int(cfg.get("hand_touch_frames", 8)),
+        cooldown_seconds=float(cfg.get("cooldown_seconds", 2.0)),
+    )
+
     cap = cv2.VideoCapture(int(cfg.get("camera_index", 0)))
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, int(cfg.get("frame_width", 1280)))
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, int(cfg.get("frame_height", 720)))
@@ -35,11 +40,6 @@ def main() -> None:
             f"Unable to open camera index {cfg.get('camera_index', 0)}. "
             "Check the camera connection, permissions, and config.yaml."
         )
-
-    gate = AlertGate(
-        required_frames=int(cfg.get("hand_touch_frames", 8)),
-        cooldown_seconds=float(cfg.get("cooldown_seconds", 2.0)),
-    )
 
     try:
         while True:
