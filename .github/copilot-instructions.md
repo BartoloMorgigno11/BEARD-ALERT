@@ -1,9 +1,7 @@
-- [x] Verify that the copilot-instructions.md file in the .github directory is created.
-- [x] Clarify Project Requirements
-- [x] Scaffold the Project
-- [x] Customize the Project
-- [x] Install Required Extensions
-- [x] Compile the Project
-- [x] Create and Run Task
-- [x] Launch the Project
-- [x] Ensure Documentation is Complete
+# Repository maintenance instructions
+
+- Preserve the local Windows webcam workflow and the optional nature of YOLO person detection.
+- Keep alert-policy tests independent of camera hardware.
+- Run `python -m compileall -q src tests` and `python -m unittest discover -s tests -p 'test_*.py' -v` before proposing code changes.
+- Do not claim real-camera accuracy, physical hand contact, or safety guarantees from offline tests.
+- Preserve local frame processing and document any changes to data handling or third-party dependencies.
