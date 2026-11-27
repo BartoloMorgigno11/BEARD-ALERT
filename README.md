@@ -1,5 +1,7 @@
 # Beard Alert
 
+[![Offline alert-policy tests](https://github.com/BartoloMorgigno11/BEARD-ALERT/actions/workflows/ci.yml/badge.svg)](https://github.com/BartoloMorgigno11/BEARD-ALERT/actions/workflows/ci.yml)
+
 Beard Alert is a local Windows webcam utility that plays an audible alert when a detected hand overlaps the lower-face region. It combines MediaPipe Face Mesh and Hands; optional YOLO person detection can narrow processing to the most prominent person.
 
 > This is a computer-vision experiment, not a safety, medical, or biometric-identification system. Detection quality depends on camera angle, lighting, occlusion, and the configured thresholds.
@@ -89,4 +91,4 @@ Frames are processed locally in memory. The application does not upload, transmi
 
 ## License
 
-The source code is released under the [MIT License](LICENSE). Third-party Python packages and optional YOLO weights retain their respective licenses.
+The source code is released under the [MIT License](LICENSE). Third-party Python packages and optional YOLO weights retain their respective licenses. The optional Ultralytics YOLO integration is subject to [Ultralytics' AGPL-3.0 or Enterprise licensing terms](https://www.ultralytics.com/license). The MIT notice does not override applicable third-party obligations; licensing compatibility must be assessed before further redistribution or deployment of an integrated YOLO-enabled version. No Enterprise license is claimed.
