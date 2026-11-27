@@ -6,6 +6,8 @@ Beard Alert is a local Windows webcam utility that plays an audible alert when a
 
 > This is a computer-vision experiment, not a safety, medical, or biometric-identification system. Detection quality depends on camera angle, lighting, occlusion, and the configured thresholds.
 
+**Project authorship:** Individual project by Bartolo Morgigno.
+
 ## Features
 
 - Real-time webcam processing with an on-screen debug overlay.
